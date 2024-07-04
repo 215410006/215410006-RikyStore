@@ -23,6 +23,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
   bool isLoad = true;
   getUser() {
     FirebaseAuth.instance.authStateChanges().listen((User? _user) {
+      if (!mounted) return;
       setState(() {
         user = _user;
       });
@@ -41,9 +42,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
   }
 
   void checkout() async {
-    setState(() {
-      productSelected.removeWhere((product) => product.quantity <= 0);
-    });
+    productSelected.removeWhere((product) => product.quantity <= 0);
     if (productSelected.isNotEmpty) {
       bool isEligble = true;
       for (var element in productSelected) {
@@ -86,6 +85,7 @@ class _DetailProductScreenState extends State<DetailProductScreen> {
 
   void start() async {
     await getUser();
+    if (!mounted) return;
     setState(() {
       isLoad = false;
     });

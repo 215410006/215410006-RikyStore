@@ -32,6 +32,7 @@ class _SellerOrderScreenState extends State<SellerOrderScreen> {
   bool isLoad = true;
   getUser() {
     FirebaseAuth.instance.authStateChanges().listen((User? _user) {
+      if (!mounted) return;
       setState(() {
         user = _user;
       });
@@ -40,6 +41,7 @@ class _SellerOrderScreenState extends State<SellerOrderScreen> {
 
   void startScreen() async {
     await getUser();
+    if (!mounted) return;
     setState(() {
       isLoad = false;
     });

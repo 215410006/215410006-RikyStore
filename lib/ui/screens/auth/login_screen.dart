@@ -34,7 +34,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   login() {
-    if (!mounted) return;
     setState(() {
       isLoad = true;
     });

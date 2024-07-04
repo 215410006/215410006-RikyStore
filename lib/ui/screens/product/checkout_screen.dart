@@ -69,6 +69,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   String selectedPay = 'bca';
   getUser() {
     FirebaseAuth.instance.authStateChanges().listen((User? _user) {
+      if (!mounted) return;
       setState(() {
         user = _user;
       });
@@ -101,23 +102,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       isLoad = true;
     });
     await getCity();
-    isLoad = false;
   }
 
   getCity() async {
     var res =
         await RajaOngkirController().getCity(provinceId: _selectedProvince);
     if (res.error == null) {
-      setState(() {
-        cityData = CityRajaOngkirList(results: []);
-        cityData = res.data as CityRajaOngkirList;
-        _selectedCity = cityData.results![0].cityId ?? '';
-      });
+      cityData = CityRajaOngkirList(results: []);
+      cityData = res.data as CityRajaOngkirList;
+      _selectedCity = cityData.results![0].cityId ?? '';
       await cekOngkir();
       // setState(() {
       //   isLoad = false;
       // });
     } else {
+      if (!mounted) return;
       setState(() {
         _selectedCity = '';
         cityData = CityRajaOngkirList(results: []);
@@ -135,6 +134,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       isLoad = true;
     });
     await cekOngkir();
+    if (!mounted) return;
     setState(() {
       address.text =
           'Kab. ${city.cityName}, ${city.province} - ${city.postalCode}';
@@ -162,10 +162,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         courier: _selectedCourier);
 
     if (result.error == null) {
+      if (!mounted) return;
       setState(() {
+        isLoad = false;
         ongkirData = result.data as CheckOngkirResponseList;
       });
     } else {
+      if (!mounted) return;
       setState(() {
         isLoad = true;
       });
@@ -185,24 +188,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
     if (!doc.exists) {
       Navigator.pop(context);
     } else {
-      setState(() {
-        weightProduct = doc.get(ProductFireStoreModel().weight);
-        productPrice = doc.get(ProductFireStoreModel().price);
-      });
+      weightProduct = doc.get(ProductFireStoreModel().weight);
+      productPrice = doc.get(ProductFireStoreModel().price);
     }
 
     for (var element in widget.coData) {
       variantListData.add(ProductVariantOrderModel(
           id: element.idVariant, quantity: element.quantity));
       int total = (productPrice + element.additionalPrice) * element.quantity;
-      setState(() {
-        weight = weight + (weightProduct * element.quantity);
-        amount = amount + total;
-        amountFinal = amount;
-      });
+      weight = weight + (weightProduct * element.quantity);
+      amount = amount + total;
+      amountFinal = amount;
     }
     await getUser();
     await getProvince();
+    if (!mounted) return;
     setState(() {
       isLoad = false;
     });
@@ -245,6 +245,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
+      if (!mounted) return;
       setState(() {
         _imageFile = File(pickedFile.path);
       });
@@ -256,6 +257,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
+      if (!mounted) return;
       setState(() {
         _imageFile = File(pickedFile.path);
       });
@@ -330,6 +332,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
           ));
         } else {
+          if (!mounted) return;
           setState(() {
             isLoad = false;
           });
@@ -340,6 +343,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ));
         }
       } else {
+        if (!mounted) return;
         setState(() {
           isLoad = false;
         });
@@ -350,6 +354,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ));
       }
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         isLoad = false;
       });
@@ -660,10 +665,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     child: DropdownButton<String>(
                                       value: _selectedProvince,
                                       onChanged: (String? newValue) {
-                                        setState(() {
-                                          _selectedProvince = newValue!;
-                                          selectProvince();
-                                        });
+                                        _selectedProvince = newValue!;
+                                        selectProvince();
                                       },
                                       hint: Text(
                                         "Tidak Ditemukan Provinsi",
@@ -695,13 +698,11 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     child: DropdownButton<String>(
                                       value: _selectedCity,
                                       onChanged: (String? newValue) {
-                                        setState(() {
-                                          _selectedCity = newValue!;
-                                          selectCity(cityData.results!
-                                              .singleWhere((element) =>
-                                                  element.cityId ==
-                                                  _selectedCity));
-                                        });
+                                        _selectedCity = newValue!;
+                                        selectCity(cityData.results!
+                                            .singleWhere((element) =>
+                                                element.cityId ==
+                                                _selectedCity));
                                       },
                                       hint: Text(
                                         "Tidak Ditemukan Kota",
@@ -750,14 +751,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     width: double.infinity,
                                     child: DropdownButton<String>(
                                       value: _selectedCourier,
-                                      onChanged: (String? newValue) async {
-                                        setState(() {
-                                          _selectedCourier = newValue!;
-                                        });
-                                        await cekOngkir();
-                                        setState(() {
-                                          isLoad = false;
-                                        });
+                                      onChanged: (String? newValue) {
+                                        _selectedCourier = newValue!;
+
+                                        cekOngkir();
                                       },
                                       isExpanded: true,
                                       items: _courier
@@ -827,40 +824,37 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                                                 .service,
                                                     onChanged:
                                                         (bool? newValue) {
-                                                      setState(() {
-                                                        _selectedCourierCode =
-                                                            ongkirData
-                                                                    .results![
-                                                                        index]
-                                                                    .code ??
-                                                                "";
-                                                        _selectedCourierCost =
-                                                            ongkirData
-                                                                    .results![
-                                                                        index]
-                                                                    .costs![
-                                                                        iChild]
-                                                                    .service ??
-                                                                "";
-                                                        _selectedCourierCostDesc =
-                                                            ongkirData
-                                                                    .results![
-                                                                        index]
-                                                                    .costs![
-                                                                        iChild]
-                                                                    .description ??
-                                                                "";
-                                                        setState(() {
-                                                          ongkir = ongkirData
-                                                              .results![index]
-                                                              .costs![iChild]
-                                                              .cost![0]
-                                                              .value!
-                                                              .toInt();
-                                                        });
-                                                        amountFinal =
-                                                            amount + ongkir;
-                                                      });
+                                                      _selectedCourierCode =
+                                                          ongkirData
+                                                                  .results![
+                                                                      index]
+                                                                  .code ??
+                                                              "";
+                                                      _selectedCourierCost =
+                                                          ongkirData
+                                                                  .results![
+                                                                      index]
+                                                                  .costs![
+                                                                      iChild]
+                                                                  .service ??
+                                                              "";
+                                                      _selectedCourierCostDesc =
+                                                          ongkirData
+                                                                  .results![
+                                                                      index]
+                                                                  .costs![
+                                                                      iChild]
+                                                                  .description ??
+                                                              "";
+                                                      ongkir = ongkirData
+                                                          .results![index]
+                                                          .costs![iChild]
+                                                          .cost![0]
+                                                          .value!
+                                                          .toInt();
+                                                      amountFinal =
+                                                          amount + ongkir;
+                                                      setState(() {});
                                                     },
                                                   ),
                                                   Column(

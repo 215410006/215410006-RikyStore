@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isLoad = true;
   getUser() {
     FirebaseAuth.instance.authStateChanges().listen((User? _user) {
+      if (!mounted) return;
       setState(() {
         user = _user;
       });
@@ -44,47 +45,35 @@ class _HomeScreenState extends State<HomeScreen> {
     var dateParse = DateTime.parse(date.toString());
     var formattedhours = "${dateParse.hour}";
 
-    setState(() {
-      hoursnow = int.parse(formattedhours);
-      datenow = dateParse.toString();
-    });
+    hoursnow = int.parse(formattedhours);
+    datenow = dateParse.toString();
   }
 
   void setGreeting() {
     if (user != null) {
-      // greeting +=
-      // " ${user!.displayName!.substring(0, user!.displayName!.length < 7 ? user!.displayName!.length : 7)}";
+      greeting +=
+          " ${user!.displayName!.substring(0, user!.displayName!.length < 7 ? user!.displayName!.length : 7)}";
     }
     greeting += ", ";
 
     if (hoursnow >= 5 && hoursnow < 11) {
-      setState(() {
-        greeting += "Selamat Pagi";
-      });
+      greeting += "Selamat Pagi";
     } else if (hoursnow >= 11 && hoursnow < 15) {
-      setState(() {
-        greeting += "Selamat Siang";
-      });
+      greeting += "Selamat Siang";
     } else if (hoursnow >= 15 && hoursnow < 18) {
-      setState(() {
-        greeting += "Selamat Sore";
-      });
+      greeting += "Selamat Sore";
     } else if (hoursnow >= 18 && hoursnow <= 24) {
-      setState(() {
-        greeting += "Selamat Malam";
-      });
+      greeting += "Selamat Malam";
     } else if (hoursnow >= 0 && hoursnow < 5) {
-      setState(() {
-        greeting += "Selamat Malam";
-      });
+      greeting += "Selamat Malam";
     }
   }
 
 //Product
 
   void startScreen() async {
-    await getCurrentDate();
     await getUser();
+    await getCurrentDate();
     setGreeting();
   }
 

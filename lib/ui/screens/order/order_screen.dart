@@ -32,6 +32,7 @@ class _OrderScreenState extends State<OrderScreen> {
   bool isLoad = true;
   getUser() {
     FirebaseAuth.instance.authStateChanges().listen((User? _user) {
+      if (!mounted) return;
       setState(() {
         user = _user;
       });
@@ -40,6 +41,7 @@ class _OrderScreenState extends State<OrderScreen> {
 
   void startScreen() async {
     await getUser();
+    if (!mounted) return;
     setState(() {
       isLoad = false;
     });
@@ -79,7 +81,7 @@ class _OrderScreenState extends State<OrderScreen> {
                           width: double.infinity,
                           child: DropdownButton<String>(
                             value: _selectedStatus,
-                            onChanged: (String? newValue) async {
+                            onChanged: (String? newValue) {
                               setState(() {
                                 _selectedStatus = newValue!;
                               });
@@ -170,7 +172,7 @@ class _OrderScreenState extends State<OrderScreen> {
                                                 MaterialPageRoute(
                                                   builder: (context) =>
                                                       OrderDetailScreen(
-                                                        isSeler: false,
+                                                          isSeler: false,
                                                           orderId: snapshot
                                                               .data!
                                                               .docs[index]

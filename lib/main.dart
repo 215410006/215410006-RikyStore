@@ -30,15 +30,15 @@ class _MyAppState extends State<MyApp> {
   User? user;
   void checkRole() async {
     FirebaseAuth.instance.authStateChanges().listen((User? _user) async {
-      setState(() {
-        user = _user;
-      });
+      if (!mounted) return;
+      user = _user;
       if (user != null) {
         FirebaseFirestore firestore = FirebaseFirestore.instance;
         final userFireStore = await firestore
             .collection(UserFireStoreModel().collection)
             .doc(user!.uid)
             .get();
+
         setState(() {
           role = userFireStore.get(UserFireStoreModel().role);
           isLoad = false;

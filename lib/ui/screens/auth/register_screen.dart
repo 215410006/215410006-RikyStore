@@ -25,7 +25,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isLoad = false;
 
   void register() {
-    if (!mounted) return;
     setState(() {
       isLoad = true;
     });

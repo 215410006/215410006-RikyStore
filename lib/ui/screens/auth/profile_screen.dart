@@ -26,6 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   getUser() {
     FirebaseAuth.instance.authStateChanges().listen((User? _user) {
+      if (!mounted) return;
       setState(() {
         user = _user;
         if (user != null) {

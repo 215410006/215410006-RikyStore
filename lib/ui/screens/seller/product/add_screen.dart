@@ -71,7 +71,7 @@ class _AddProductState extends State<AddProduct> {
         }
       }
     }
-
+    if (!mounted) return;
     setState(() {
       isLoad = false;
     });
@@ -238,6 +238,7 @@ class _AddProductState extends State<AddProduct> {
                   });
                   await _pickImageFromGallery();
                   Navigator.of(context).pop();
+                  if (!mounted) return;
                   setState(() {
                     isLoad = false;
                   });
@@ -252,6 +253,7 @@ class _AddProductState extends State<AddProduct> {
                   });
                   await _pickImageFromCamera();
                   Navigator.of(context).pop();
+                  if (!mounted) return;
                   setState(() {
                     isLoad = false;
                   });
@@ -269,6 +271,7 @@ class _AddProductState extends State<AddProduct> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
+      if (!mounted) return;
       setState(() {
         _imageFile = File(pickedFile.path);
       });
@@ -280,6 +283,7 @@ class _AddProductState extends State<AddProduct> {
         await ImagePicker().pickImage(source: ImageSource.camera);
 
     if (pickedFile != null) {
+      if (!mounted) return;
       setState(() {
         _imageFile = File(pickedFile.path);
       });
