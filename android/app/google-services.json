@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "232270495050",
+    "project_id": "riky-81bc9",
+    "storage_bucket": "riky-81bc9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232270495050:android:948f0b99ea465a6bc5d5b3",
+        "android_client_info": {
+          "package_name": "com.example.riky"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5I0atbr-ZBpL8FPuiNCOpWZT41725Wfo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
